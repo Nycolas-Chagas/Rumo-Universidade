@@ -112,6 +112,10 @@
 
                 <!-- Ações Rápidas no Topo -->
                 <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                    <button onclick="sharePlanOnWhatsApp()" class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-3.5 py-2.5 rounded-xl shadow-sm transition cursor-pointer">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>Compartilhar no WhatsApp</span>
+                    </button>
                     <button onclick="openBackupModal()" class="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white border border-white/25 font-semibold text-sm px-3.5 py-2.5 rounded-xl transition cursor-pointer">
                         <i data-lucide="share-2" class="w-4 h-4 text-emerald-300"></i>
                         <span>Transferir / Backup</span>
@@ -1426,6 +1430,22 @@
                     </div>
                 </div>
 
+                <!-- Link do Edital / Página do Curso e Anotações (Opcional) -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
+                    <div>
+                        <label for="course-link" class="block text-xs font-bold uppercase text-slate-600 mb-1">
+                            Link do Edital / Termo de Adesão (Opcional)
+                        </label>
+                        <input type="url" id="course-link" placeholder="https://... (cole o link do curso ou edital da faculdade)" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label for="course-notes" class="block text-xs font-bold uppercase text-slate-600 mb-1">
+                            Anotações & Observações Importantes (Opcional)
+                        </label>
+                        <textarea id="course-notes" rows="2" placeholder="Ex: Campus Pampulha • 40 vagas • Exige mínimo 500 em Redação" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                    </div>
+                </div>
+
                 <!-- Botões de Ação -->
                 <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
                     <button type="button" onclick="closeCourseModal()" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
@@ -1567,6 +1587,27 @@
             </div>
 
             <div class="p-6 space-y-5 max-h-[85vh] overflow-y-auto">
+                <!-- Compartilhar Resumo Formatado no WhatsApp -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 space-y-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+                            <span>Resumo Bonito para WhatsApp</span>
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="copyWhatsAppFormattedSummary()" class="inline-flex items-center gap-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-2.5 py-1.5 rounded-lg transition cursor-pointer">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Copiar</span>
+                            </button>
+                            <button type="button" onclick="sharePlanOnWhatsApp()" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition cursor-pointer">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span>Enviar</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-emerald-900">Gera uma mensagem organizada com suas notas e 1ª/2ª opções para mostrar aos pais, professores ou orientadores.</p>
+                </div>
+
                 <!-- Exportar Código -->
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
@@ -2186,6 +2227,8 @@
                             modality: 'Ampla Concorrência',
                             cutoff: 742.5,
                             status: 'Definido',
+                            link: 'https://acessounico.mec.gov.br/sisu',
+                            notes: 'Campus Pampulha • Exige nota mínima 500 em Redação e peso 3 em Matemática.',
                             weights: { lc: 1, ch: 1, cn: 2, mt: 3, red: 2 }
                         },
                         {
@@ -2199,6 +2242,8 @@
                             modality: 'Cota Escola Pública + Renda',
                             cutoff: 668.0,
                             status: 'Plano B',
+                            link: 'https://acessounico.mec.gov.br/prouni',
+                            notes: 'Campus Coração Eucarístico • Conferir documentos de renda familiar até 1,5 SM.',
                             weights: { lc: 1, ch: 1, cn: 1, mt: 1, red: 1 }
                         }
                     ];
@@ -2665,14 +2710,46 @@
                 ? `<span class="text-[11px] text-indigo-700 font-semibold">Pesos: LC ${w.lc} • CH ${w.ch} • CN ${w.cn} • MT ${w.mt} • RED ${w.red}</span>`
                 : '';
 
+            const safeLink = sanitizeUrl(course.link);
+            const linkBadge = safeLink
+                ? `<a href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-2.5 py-0.5 rounded-md transition no-print">
+                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                    <span>Abrir Edital / Site</span>
+                   </a>`
+                : '';
+
+            const notesBlock = course.notes
+                ? `<div class="mt-2 bg-amber-50/80 border border-amber-200/80 rounded-lg px-3 py-1.5 text-xs text-amber-950 flex items-start gap-1.5">
+                    <i data-lucide="sticky-note" class="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5"></i>
+                    <span>${escapeHtml(course.notes)}</span>
+                   </div>`
+                : '';
+
             return `
                 <div class="border border-slate-200 hover:border-indigo-300 rounded-xl p-4 bg-slate-50/60 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="space-y-1.5">
+                    <div class="space-y-1.5 flex-1">
                         <div class="flex flex-wrap items-center gap-2">
                             ${optionBadge}
                             <span class="text-xs font-semibold px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700">${escapeHtml(course.status || 'Definido')}</span>
                             ${!isSisu && course.scholarship ? `<span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">${escapeHtml(course.scholarship)}</span>` : ''}
+                            ${linkBadge}
                         </div>
+
+                        <h4 class="font-bold text-slate-900 text-base">${escapeHtml(course.name)}</h4>
+                        <p class="text-xs text-slate-600">
+                            <strong>${escapeHtml(course.institution)}</strong> • ${escapeHtml(course.location)} • ${escapeHtml(course.shift)}
+                        </p>
+
+                        <div class="flex flex-wrap items-center gap-2 pt-1">
+                            <span class="text-[11px] font-medium text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200">
+                                ${escapeHtml(course.modality)}
+                            </span>
+                            ${!isNaN(cutoff) && cutoff > 0 ? `<span class="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200">Corte est.: ${cutoff.toFixed(2)}</span>` : ''}
+                            ${comparisonBadge}
+                            ${weightsText}
+                        </div>
+                        ${notesBlock}
+                    </div>
 
                         <h4 class="font-bold text-slate-900 text-base">${escapeHtml(course.name)}</h4>
                         <p class="text-xs text-slate-600">
@@ -2729,6 +2806,8 @@
                     document.getElementById('course-modality').value = course.modality || 'Ampla Concorrência';
                     document.getElementById('course-cutoff').value = course.cutoff || '';
                     document.getElementById('course-status').value = course.status || 'Definido';
+                    document.getElementById('course-link').value = course.link || '';
+                    document.getElementById('course-notes').value = course.notes || '';
 
                     const w = course.weights || { lc: 1, ch: 1, cn: 1, mt: 1, red: 1 };
                     document.getElementById('course-w-lc').value = w.lc || 1;
@@ -2831,6 +2910,8 @@
                 modality: document.getElementById('course-modality').value,
                 cutoff: parseFloat(document.getElementById('course-cutoff').value) || '',
                 status: document.getElementById('course-status').value,
+                link: (document.getElementById('course-link')?.value || '').trim(),
+                notes: (document.getElementById('course-notes')?.value || '').trim(),
                 weights: {
                     lc: parseFloat(document.getElementById('course-w-lc').value) || 1,
                     ch: parseFloat(document.getElementById('course-w-ch').value) || 1,
@@ -3379,6 +3460,113 @@
             if (modal) modal.classList.add('hidden');
         }
 
+        function buildFormattedWhatsAppMessage() {
+            const { simpleAvg, weightedAvg, countFilled } = getCalculatedScores();
+            const sisuCourses = state.courses.filter(c => c.program === 'sisu');
+            const prouniCourses = state.courses.filter(c => c.program === 'prouni');
+            const visibleDocs = getVisibleDocumentItems();
+            const checkedDocsCount = visibleDocs.filter(d => state.docsChecked[d.id]).length;
+            const docsPct = visibleDocs.length > 0 ? Math.round((checkedDocsCount / visibleDocs.length) * 100) : 0;
+
+            const lines = [];
+            lines.push('🎓 *MEU PLANO RUMO À UNIVERSIDADE*');
+            lines.push('━━━━━━━━━━━━━━━━━━━━');
+            lines.push('');
+
+            lines.push('📊 *MINHAS NOTAS ENEM:*');
+            if (countFilled > 0) {
+                lines.push(`• Linguagens: *${state.scores.lc || '--'}* | Humanas: *${state.scores.ch || '--'}*`);
+                lines.push(`• Natureza: *${state.scores.cn || '--'}* | Matemática: *${state.scores.mt || '--'}*`);
+                lines.push(`• Redação: *${state.scores.red || '--'}*`);
+                lines.push(`✨ Média Simples: *${simpleAvg.toFixed(2)} pts*`);
+                lines.push(`⚖️ Média Ponderada: *${weightedAvg.toFixed(2)} pts*`);
+            } else {
+                lines.push('• _Ainda não preenchi minhas notas no simulador._');
+            }
+            lines.push('');
+
+            lines.push(`🏛️ *OPÇÕES NO SISU (${sisuCourses.length}):*`);
+            if (sisuCourses.length > 0) {
+                sisuCourses.forEach((c, idx) => {
+                    const label = idx === 0 ? '🥇 1ª Opção' : idx === 1 ? '🥈 2ª Opção' : `📌 Reserva #${idx + 1}`;
+                    const courseScore = calculateCourseWeightedScore(c);
+                    const cutoff = parseFloat(c.cutoff);
+                    let scoreLine = '';
+                    if (courseScore > 0 && !isNaN(cutoff) && cutoff > 0) {
+                        const diff = courseScore - cutoff;
+                        const statusEmoji = diff >= 0 ? '✅' : '⚠️';
+                        const diffText = diff >= 0 ? `+${diff.toFixed(1)} acima` : `${diff.toFixed(1)} abaixo`;
+                        scoreLine = `\n   ${statusEmoji} Minha nota: *${courseScore.toFixed(1)}* | Corte: *${cutoff.toFixed(2)}* (${diffText})`;
+                    } else if (!isNaN(cutoff) && cutoff > 0) {
+                        scoreLine = `\n   🎯 Corte estimado: *${cutoff.toFixed(2)}*`;
+                    } else if (courseScore > 0) {
+                        scoreLine = `\n   ✨ Minha nota neste curso: *${courseScore.toFixed(1)} pts*`;
+                    }
+                    lines.push(`${label}: *${c.name}*`);
+                    lines.push(`   📍 ${c.institution} (${c.location}) • ${c.shift}`);
+                    lines.push(`   📋 ${c.modality}${scoreLine}`);
+                    if (c.notes) lines.push(`   📝 _Obs: ${c.notes}_`);
+                });
+            } else {
+                lines.push('• _Nenhum curso cadastrado no SISU ainda._');
+            }
+            lines.push('');
+
+            lines.push(`🎖️ *OPÇÕES NO PROUNI (${prouniCourses.length}):*`);
+            if (prouniCourses.length > 0) {
+                prouniCourses.forEach((c, idx) => {
+                    const label = idx === 0 ? '🥇 1ª Opção' : idx === 1 ? '🥈 2ª Opção' : `📌 Reserva #${idx + 1}`;
+                    const cutoff = parseFloat(c.cutoff);
+                    let scoreLine = '';
+                    if (simpleAvg > 0 && !isNaN(cutoff) && cutoff > 0) {
+                        const diff = simpleAvg - cutoff;
+                        const statusEmoji = diff >= 0 ? '✅' : '⚠️';
+                        const diffText = diff >= 0 ? `+${diff.toFixed(1)} acima` : `${diff.toFixed(1)} abaixo`;
+                        scoreLine = `\n   ${statusEmoji} Minha média: *${simpleAvg.toFixed(1)}* | Corte: *${cutoff.toFixed(2)}* (${diffText})`;
+                    } else if (!isNaN(cutoff) && cutoff > 0) {
+                        scoreLine = `\n   🎯 Corte estimado: *${cutoff.toFixed(2)}*`;
+                    }
+                    lines.push(`${label}: *${c.name}* (${c.scholarship || 'Bolsa'})`);
+                    lines.push(`   📍 ${c.institution} (${c.location}) • ${c.shift}`);
+                    lines.push(`   📋 ${c.modality}${scoreLine}`);
+                    if (c.notes) lines.push(`   📝 _Obs: ${c.notes}_`);
+                });
+            } else {
+                lines.push('• _Nenhum curso cadastrado no PROUNI ainda._');
+            }
+            lines.push('');
+
+            lines.push(`📂 *DOCUMENTOS:* ${checkedDocsCount}/${visibleDocs.length} separados (*${docsPct}%*)`);
+            lines.push(`📅 *DATAS PREVISTAS:* SISU ${formatDateBr(state.targetDates.sisu)} | PROUNI ${formatDateBr(state.targetDates.prouni)}`);
+            lines.push('');
+            lines.push('💬 _O que você acha dessas minhas opções?_');
+
+            return lines.join('\n');
+        }
+
+        function copyWhatsAppFormattedSummary() {
+            const text = buildFormattedWhatsAppMessage();
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            temp.setSelectionRange(0, 999999);
+            try {
+                document.execCommand('copy');
+                showToast('Resumo formatado copiado! Agora é só colar no WhatsApp.');
+            } catch (e) {
+                showToast('Não foi possível copiar automaticamente.');
+            }
+            document.body.removeChild(temp);
+        }
+
+        function sharePlanOnWhatsApp() {
+            const text = buildFormattedWhatsAppMessage();
+            copyWhatsAppFormattedSummary();
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(waUrl, '_blank', 'noopener,noreferrer');
+        }
+
         function copyPlanBackupCode() {
             const exportBox = document.getElementById('backup-export-code');
             if (!exportBox || !exportBox.value) return;
@@ -3531,14 +3719,14 @@
                     <h2 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">2. Cursos Escolhidos • SISU (${sisuCourses.length})</h2>
                     <ul style="font-size: 13px; padding-left: 18px; margin-top: 0; margin-bottom: 12px;">
                         ${sisuCourses.length > 0
-                            ? sisuCourses.map((c, i) => `<li><strong>${i + 1}ª Opção:</strong> ${escapeHtml(c.name)} — ${escapeHtml(c.institution)} (${escapeHtml(c.location)}) • ${escapeHtml(c.modality)} ${c.cutoff ? `| Corte: ${c.cutoff}` : ''}</li>`).join('')
+                            ? sisuCourses.map((c, i) => `<li><strong>${i + 1}ª Opção:</strong> ${escapeHtml(c.name)} — ${escapeHtml(c.institution)} (${escapeHtml(c.location)}) • ${escapeHtml(c.modality)} ${c.cutoff ? `| Corte: ${c.cutoff}` : ''}${c.notes ? `<br/><span style="font-size:12px; color:#475569;">Obs.: ${escapeHtml(c.notes)}</span>` : ''}</li>`).join('')
                             : '<li>Nenhum curso cadastrado no SISU.</li>'}
                     </ul>
 
                     <h2 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">3. Cursos Escolhidos • PROUNI (${prouniCourses.length})</h2>
                     <ul style="font-size: 13px; padding-left: 18px; margin-top: 0; margin-bottom: 12px;">
                         ${prouniCourses.length > 0
-                            ? prouniCourses.map((c, i) => `<li><strong>${i + 1}ª Opção:</strong> ${escapeHtml(c.name)} — ${escapeHtml(c.institution)} (${escapeHtml(c.scholarship || 'Bolsa')}) • ${escapeHtml(c.modality)}</li>`).join('')
+                            ? prouniCourses.map((c, i) => `<li><strong>${i + 1}ª Opção:</strong> ${escapeHtml(c.name)} — ${escapeHtml(c.institution)} (${escapeHtml(c.scholarship || 'Bolsa')}) • ${escapeHtml(c.modality)}${c.notes ? `<br/><span style="font-size:12px; color:#475569;">Obs.: ${escapeHtml(c.notes)}</span>` : ''}</li>`).join('')
                             : '<li>Nenhum curso cadastrado no PROUNI.</li>'}
                     </ul>
 
@@ -3619,6 +3807,14 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        function sanitizeUrl(url) {
+            if (!url) return '';
+            const trimmed = String(url).trim();
+            if (/^https?:\/\//i.test(trimmed)) return trimmed;
+            if (/^[a-z0-9.-]+\.[a-z]{2,}/i.test(trimmed)) return `https://${trimmed}`;
+            return '';
         }
     </script>
 </body>
