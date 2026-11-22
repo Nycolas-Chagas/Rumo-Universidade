@@ -865,33 +865,33 @@
                     <!-- Pergunta 2: Renda Familiar per capita -->
                     <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
                         <label for="quota-quiz-income" class="block text-xs font-bold uppercase tracking-wider text-indigo-700">
-                            2. Renda por Pessoa
+                            2. Renda por Pessoa (SM R$ 1.621)
                         </label>
                         <p class="text-xs text-slate-600">Renda bruta familiar dividida pelos moradores:</p>
                         <select id="quota-quiz-income" onchange="evaluateQuotaQuiz()" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="ate1">Até 1 salário mínimo (até R$ 1.518)</option>
-                            <option value="ate1_5">Entre 1 e 1,5 sal. mínimo (até R$ 2.277)</option>
-                            <option value="ate3">Entre 1,5 e 3 sal. mínimos (até R$ 4.554)</option>
-                            <option value="acima3">Acima de 3 salários mínimos</option>
+                            <option value="ate1">Até 1 salário mínimo (até R$ 1.621,00)</option>
+                            <option value="ate1_5">Entre 1 e 1,5 sal. mínimo (até R$ 2.431,50)</option>
+                            <option value="ate3">Entre 1,5 e 3 sal. mínimos (até R$ 4.863,00)</option>
+                            <option value="acima3">Acima de 3 salários mínimos (acima de R$ 4.863,00)</option>
                         </select>
                     </div>
 
-                    <!-- Pergunta 3: Autodeclaração / Perfil -->
+                    <!-- Pergunta 3: Autodeclaração PPI / Quilombola / PcD -->
                     <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
                         <span class="block text-xs font-bold uppercase tracking-wider text-indigo-700">
-                            3. Autodeclaração / Perfil
+                            3. Autodeclaração (Opcional)
                         </span>
-                        <p class="text-xs text-slate-600">Marque se você se enquadra em algum grupo:</p>
-                        <div class="space-y-1.5 pt-0.5">
-                            <label class="flex items-center gap-2 text-xs font-semibold text-slate-800 cursor-pointer">
+                        <p class="text-xs text-slate-600">Marque se você se enquadra em alguma subcota:</p>
+                        <div class="space-y-1.5 pt-0.5 text-xs font-medium text-slate-700">
+                            <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="quota-quiz-ppi" onchange="evaluateQuotaQuiz()" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
-                                <span>Preto, Pardo ou Indígena (PPI)</span>
+                                <span>Preto(a), Pardo(a) ou Indígena (PPI)</span>
                             </label>
-                            <label class="flex items-center gap-2 text-xs font-semibold text-slate-800 cursor-pointer">
+                            <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="quota-quiz-quilombola" onchange="evaluateQuotaQuiz()" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
                                 <span>Quilombola</span>
                             </label>
-                            <label class="flex items-center gap-2 text-xs font-semibold text-slate-800 cursor-pointer">
+                            <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="quota-quiz-pcd" onchange="evaluateQuotaQuiz()" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
                                 <span>Pessoa com Deficiência (PcD)</span>
                             </label>
@@ -1302,15 +1302,51 @@
                     <input type="text" id="course-name" required placeholder="Ex: Ciência da Computação, Direito, Medicina..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
 
-                <!-- Instituição e Cidade/Estado -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Instituição, Estado (UF) e Cidade -->
+                <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Instituição / Universidade *</label>
                         <input type="text" id="course-institution" required placeholder="Ex: UFMG, USP, PUC-SP..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Cidade / Estado *</label>
-                        <input type="text" id="course-location" required placeholder="Ex: Belo Horizonte - MG" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                        <div class="sm:col-span-5">
+                            <label for="course-state" class="block text-xs font-bold uppercase text-slate-600 mb-1">Estado (UF) *</label>
+                            <select id="course-state" required onchange="onCourseStateChange()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none">
+                                <option value="">Selecione...</option>
+                                <option value="AC">AC - Acre</option>
+                                <option value="AL">AL - Alagoas</option>
+                                <option value="AP">AP - Amapá</option>
+                                <option value="AM">AM - Amazonas</option>
+                                <option value="BA">BA - Bahia</option>
+                                <option value="CE">CE - Ceará</option>
+                                <option value="DF">DF - Distrito Federal</option>
+                                <option value="ES">ES - Espírito Santo</option>
+                                <option value="GO">GO - Goiás</option>
+                                <option value="MA">MA - Maranhão</option>
+                                <option value="MT">MT - Mato Grosso</option>
+                                <option value="MS">MS - Mato Grosso do Sul</option>
+                                <option value="MG">MG - Minas Gerais</option>
+                                <option value="PA">PA - Pará</option>
+                                <option value="PB">PB - Paraíba</option>
+                                <option value="PR">PR - Paraná</option>
+                                <option value="PE">PE - Pernambuco</option>
+                                <option value="PI">PI - Piauí</option>
+                                <option value="RJ">RJ - Rio de Janeiro</option>
+                                <option value="RN">RN - Rio Grande do Norte</option>
+                                <option value="RS">RS - Rio Grande do Sul</option>
+                                <option value="RO">RO - Rondônia</option>
+                                <option value="RR">RR - Roraima</option>
+                                <option value="SC">SC - Santa Catarina</option>
+                                <option value="SP">SP - São Paulo</option>
+                                <option value="SE">SE - Sergipe</option>
+                                <option value="TO">TO - Tocantins</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-7">
+                            <label for="course-city" class="block text-xs font-bold uppercase text-slate-600 mb-1">Cidade *</label>
+                            <input type="text" id="course-city" list="cities-datalist" required placeholder="Escolha o estado ou digite a cidade" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <datalist id="cities-datalist"></datalist>
+                        </div>
                     </div>
                 </div>
 
@@ -1661,6 +1697,9 @@
             sisu: '2027-01-17',
             prouni: '2027-01-24'
         };
+
+        const SALARIO_MINIMO_VIGENTE = 1621.00;
+        const citiesCacheByState = {};
 
         let countdownIntervalId = null;
 
@@ -2685,7 +2724,7 @@
                     document.getElementById('course-scholarship').value = course.scholarship || 'Bolsa Integral (100%)';
                     document.getElementById('course-name').value = course.name || '';
                     document.getElementById('course-institution').value = course.institution || '';
-                    document.getElementById('course-location').value = course.location || '';
+                    parseLocationToStateAndCity(course.location || '');
                     document.getElementById('course-shift').value = course.shift || 'Integral';
                     document.getElementById('course-modality').value = course.modality || 'Ampla Concorrência';
                     document.getElementById('course-cutoff').value = course.cutoff || '';
@@ -2700,10 +2739,65 @@
                 }
             } else {
                 titleEl.textContent = 'Adicionar Opção de Curso';
+                const datalist = document.getElementById('cities-datalist');
+                if (datalist) datalist.innerHTML = '';
             }
 
             toggleProuniScholarshipField();
             modal.classList.remove('hidden');
+        }
+
+        function parseLocationToStateAndCity(locationStr) {
+            const stateSelect = document.getElementById('course-state');
+            const cityInput = document.getElementById('course-city');
+            if (!stateSelect || !cityInput) return;
+
+            const match = String(locationStr).match(/^(.*?)\s*[-–/]\s*([A-Za-z]{2})$/);
+            if (match) {
+                const cityPart = match[1].trim();
+                const ufPart = match[2].toUpperCase();
+                stateSelect.value = ufPart;
+                cityInput.value = cityPart;
+                onCourseStateChange(true);
+            } else {
+                stateSelect.value = '';
+                cityInput.value = locationStr;
+            }
+        }
+
+        async function onCourseStateChange(keepCityValue = false) {
+            const stateSelect = document.getElementById('course-state');
+            const cityInput = document.getElementById('course-city');
+            const datalist = document.getElementById('cities-datalist');
+            if (!stateSelect || !cityInput || !datalist) return;
+
+            const uf = stateSelect.value;
+            if (!keepCityValue) {
+                cityInput.value = '';
+            }
+            datalist.innerHTML = '';
+            if (!uf) return;
+
+            cityInput.placeholder = `Digite ou escolha a cidade de ${uf}...`;
+
+            if (citiesCacheByState[uf]) {
+                datalist.innerHTML = citiesCacheByState[uf].map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
+                return;
+            }
+
+            try {
+                const resp = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const names = data.map(m => m.nome);
+                    citiesCacheByState[uf] = names;
+                    if (stateSelect.value === uf) {
+                        datalist.innerHTML = names.map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
+                    }
+                }
+            } catch (e) {
+                // Fallback silencioso caso offline
+            }
         }
 
         function closeCourseModal() {
@@ -2722,6 +2816,9 @@
             event.preventDefault();
             const id = document.getElementById('course-id').value;
             const program = document.querySelector('input[name="program"]:checked')?.value || 'sisu';
+            const uf = (document.getElementById('course-state')?.value || '').trim().toUpperCase();
+            const city = (document.getElementById('course-city')?.value || '').trim();
+            const formattedLocation = uf ? `${city} - ${uf}` : city;
 
             const courseObj = {
                 id: id || `course_${Date.now()}`,
@@ -2729,7 +2826,7 @@
                 scholarship: program === 'prouni' ? document.getElementById('course-scholarship').value : '',
                 name: document.getElementById('course-name').value.trim(),
                 institution: document.getElementById('course-institution').value.trim(),
-                location: document.getElementById('course-location').value.trim(),
+                location: formattedLocation,
                 shift: document.getElementById('course-shift').value,
                 modality: document.getElementById('course-modality').value,
                 cutoff: parseFloat(document.getElementById('course-cutoff').value) || '',
@@ -3086,7 +3183,7 @@
             }
 
             if (badgeEl) {
-                const salMin = 1518; // Referência salário mínimo
+                const salMin = SALARIO_MINIMO_VIGENTE; // R$ 1.621,00
                 if (total <= 0) {
                     badgeEl.textContent = 'Preencha os valores';
                     badgeEl.className = 'text-[10px] font-medium text-slate-600 mt-0.5';
